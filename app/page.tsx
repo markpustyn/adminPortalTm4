@@ -102,4 +102,3 @@ export default function Home() {
     </main>
   );
 }
-"https://drlgexqbhttgphyvouqh.supabase.co/storage/v1/object/public/athleateimg/93c1f6c8-ab99-4649-bb9f-72c18602e1fd.jpeg"
