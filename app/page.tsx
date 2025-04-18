@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form"
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type AthleteData = {
   name?: string;
@@ -32,6 +34,7 @@ export default function Home() {
     register,
     handleSubmit,
   } = useForm<AthleteData>()
+  const router = useRouter()
 
   const handleImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -60,7 +63,21 @@ export default function Home() {
       setImgUrl([]);
     });
   };
-  const onSubmit: SubmitHandler<AthleteData> = (info) => uploadData(info)
+  const onSubmit: SubmitHandler<AthleteData> = async (info) =>  {
+    try{
+      const { data, error } = await uploadData(info)
+      console.log(data, error)
+      if(!error){
+        toast("Athlete Added Successfully")
+        router.refresh()
+      } else {
+        toast("An Error Has Occured")
+      }
+    } catch {
+      toast("An Error Has Occured")
+    }
+  }
+
 
 
   return (

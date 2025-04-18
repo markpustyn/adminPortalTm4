@@ -53,13 +53,8 @@ export async function uploadData(info: AthleteData) {
   
     const { data, error } = await supabase
       .from('athlete')
-      .insert(info);
-  
-    if (error) {
-      console.error("Insert failed:", JSON.stringify(error, null, 2));
-    } else {
-      console.log("Insert succeeded:", data);
-    }
+      .insert(info)
+      .select()
   
     return { data, error };
   }
