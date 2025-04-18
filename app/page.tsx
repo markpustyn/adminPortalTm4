@@ -2,15 +2,36 @@
 import Image from "next/image";
 import { useRef, ChangeEvent, useState, useTransition } from "react";
 import { convert } from "./lib/utils";
-import { uploadImage } from "./supabase/storage/client";
+import { uploadData, uploadImage } from "./supabase/storage/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button";
+import { useForm, SubmitHandler } from "react-hook-form"
+
+type AthleteData = {
+  name?: string;
+  school?: string;
+  weight?: string;
+  profileImg?: string;
+  class?: string;
+  height?: string;
+  interests?: string;
+  sport?: string;
+  socialMedia?: string;
+  stats?: string;
+  summary?: string;
+}
 
 export default function Home() {
   const [imgUrl, setImgUrl] = useState<string[]>([]);
   const imgInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useTransition();
   const [success, setSuccess] = useState(false)
+  const {
+    register,
+    handleSubmit,
+  } = useForm<AthleteData>()
 
   const handleImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -36,19 +57,63 @@ export default function Home() {
           urls.push(uploadedUrl);
         }
       }
-      console.log(urls);
       setImgUrl([]);
     });
   };
+  const onSubmit: SubmitHandler<AthleteData> = (info) => uploadData(info)
+
 
   return (
-    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6 flex-col">
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-semibold">Upload Athlete Images</h1>
         </div>
-
-        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold mb-4">Player Info</h2>
+          <form className="grid grid-cols-2 gap-4 bg-white p-6 rounded-2xl shadow-md max-w-3xl" 
+          onSubmit={handleSubmit(onSubmit)}
+          >
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input {...register('name')} type="text" placeholder="Name" />
+            </div>
+            <div>
+              <Label htmlFor="school">School</Label>
+              <Input {...register('school')} type="text" placeholder="School" />
+            </div>
+            <div>
+              <Label htmlFor="weight">Weight</Label>
+              <Input {...register('weight')} type="number" placeholder="Weight (lbs)" />
+            </div>
+            <div>
+              <Label htmlFor="class">Class</Label>
+              <Input {...register('class')} type="text" placeholder="Class" />
+            </div>
+            <div>
+              <Label htmlFor="height">Height</Label>
+              <Input {...register('height')} type="text" placeholder="Height" />
+            </div>
+            <div>
+              <Label htmlFor="interests">Interests</Label>
+              <Input {...register('interests')}  type="text" placeholder="Interests" />
+            </div>
+            <div>
+              <Label htmlFor="sport">Sport</Label>
+              <Input {...register('sport')} type="text" placeholder="Sport" />
+            </div>
+            <div>
+              <Label htmlFor="social">Social Media</Label>
+              <Input {...register('socialMedia')} type="text" placeholder="@username or link" />
+            </div>
+            <div className="col-span-2">
+              <Label htmlFor="stats">Stats</Label>
+              <Input {...register('stats')} type="text" placeholder="Stats" />
+            </div>
+            <div className="col-span-2">
+              <Label htmlFor="summary">Summary</Label>
+              <Textarea {...register('summary')} placeholder="Brief player summary..." rows={4} />
+            </div>
+            <div className="space-y-4">
           <div className="flex flex-col items-center space-y-2">
             <Label htmlFor="picture">Select Image</Label>
             <Input
@@ -69,13 +134,13 @@ export default function Home() {
 
           {imgUrl.length > 0 && (
             <div className="text-center">
-              <button
+              <Button
                 onClick={handleUpload}
                 className="mt-4 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-6 py-2 rounded-xl transition"
                 disabled={loading}
               >
                 {loading ? "Uploading..." : "Upload Image"}
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -98,7 +163,10 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
+        <Button type="submit">Submit</Button>
+      </form>
+
+        </div>
     </main>
   );
 }
