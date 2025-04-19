@@ -25,7 +25,7 @@ type AthleteData = {
     stats?: string;
     summary?: string;
 }
-export async function uploadImage({file, bucket, folder}: UploadProps){
+export async function uploadImage({file, bucket, folder, info}: UploadProps & {info: AthleteData}){
     const fileName = file.name
     const fileExten = fileName.slice(fileName. lastIndexOf(".") + 1)
     const path =  `${folder ? folder + "/" : ""}${uuidv4()}.${fileExten}`
@@ -39,23 +39,29 @@ export async function uploadImage({file, bucket, folder}: UploadProps){
     }
     const storage = getStorage()
 
-    const {data, error} = await storage.from(bucket).upload(path, file)
-    if(error){
-        console.error(error)
-    }
+    const {data: uploadData, error: uploadError} = await storage
+        .from(bucket)
+        .upload(path, file)
     const imgUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL!}/storage/v1/
-    object/public/${bucket}/${data?.path}`
+    object/public/${bucket}/${uploadData?.path}`
 
-    return {imgUrl, error: ""}
-}
-export async function uploadData(info: AthleteData) {
     const supabase = createClient();
-  
+    info['profileImg'] = imgUrl
+
     const { data, error } = await supabase
       .from('athlete')
       .insert(info)
       .select()
+      
+    return {imgUrl, uploadError, data, error}
+}
+// export async function uploadData(info: AthleteData, imgUrl: any) {
+//     const supabase = createClient();
+//     info['profileImg'] = imgUrl
+//     const { data, error } = await supabase
+//       .from('athlete')
+//       .insert(info)
+//       .select()
   
-    return { data, error };
-  }
-  
+//     return { data, error };
+//   }

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRef, ChangeEvent, useState, useTransition } from "react";
 import { convert } from "./lib/utils";
-import { uploadData, uploadImage } from "./supabase/storage/client";
+import {  uploadImage } from "./supabase/storage/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"
@@ -43,36 +43,25 @@ export default function Home() {
       setImgUrl((prev) => [...prev, ...newImageUrl]);
     }
   };
-
-  const handleUpload = async () => {
-    setLoading(async () => {
-      const urls: string[] = [];
-      for (const url of imgUrl) {
-        const imageFile = await convert(url);
-        const { imgUrl: uploadedUrl, error } = await uploadImage({
-          file: imageFile,
-          bucket: 'athleateimg',
-        });
-        if (error){
-          console.error(error)
-        } else {
-          setSuccess(true)
-          urls.push(uploadedUrl);
-        }
-      }
-      setImgUrl([]);
-    });
-  };
   const onSubmit: SubmitHandler<AthleteData> = async (info) =>  {
     try{
-      const { data, error } = await uploadData(info)
-      console.log(data, error)
-      if(!error){
-        toast("Athlete Added Successfully")
-        router.refresh()
-      } else {
-        toast("An Error Has Occured")
-      }
+      setLoading(async () => {
+        if(!imgUrl.length) return
+          const imageFile = await convert(imgUrl[0]);
+          const { imgUrl: uploadedUrl, error } = await uploadImage({
+            file: imageFile,
+            bucket: 'athleateimg',
+            info
+          });
+          if (!error){
+            setImgUrl([uploadedUrl]);
+            setSuccess(true)
+            toast("Athlete Added Successfully") 
+            router.refresh()
+          } else {
+            toast("An Error Has Occured")
+          }
+      });
     } catch {
       toast("An Error Has Occured")
     }
@@ -140,15 +129,8 @@ export default function Home() {
               onChange={handleImg}
               disabled={loading}
             />
-            <button
-              onClick={() => imgInput.current?.click()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full transition"
-              disabled={loading}
-            >
-              Browse Files
-            </button>
           </div>
-
+{/* 
           {imgUrl.length > 0 && (
             <div className="text-center">
               <Button
@@ -159,7 +141,7 @@ export default function Home() {
                 {loading ? "Uploading..." : "Upload Image"}
               </Button>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
