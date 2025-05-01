@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchData } from "./supabase/storage/client";
+import { deleteAthlete, fetchData } from "./supabase/storage/client";
 import {
     Card,
     CardDescription,
@@ -8,6 +8,10 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+
 type AthleteData = {
     name?: string;
     school?: string;
@@ -31,27 +35,40 @@ export default function Athletes() {
       if (error) console.error(error);
       else setData(data || []);
     }
-    load();
+    load()
   }, []);
+  
+
   
 
   return (
     <div>
-    <h2 className="text-2xl text-center mb-4">Athletes</h2>
+    <h2 className="text-2xl text-center mb-4 font-bold">Athletes</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {data.map((athlete, index) => (
-        <Card key={index}>
-            <CardHeader>
+    {data.map((athlete, index) => (
+    <Card key={index}>
+        <CardHeader>
             <CardTitle>{athlete.name || "Card Title"}</CardTitle>
-            <CardDescription>{athlete.school || "Card Description"}</CardDescription>
+              <CardDescription>{athlete.school || "Card Description"}</CardDescription>
             </CardHeader>
             <Image
-            src={athlete.profileImg.replace(/\s/g, '')}
-            alt="Athlete"
-            width={300}
-            height={300}
-            className="rounded"
-            />
+                src={athlete.profileImg.replace(/\s/g, '')}
+                alt="Athlete"
+                width={300}
+                height={300}
+                className="rounded"
+                />
+                <Button onClick={async () =>{
+                    const { error } = await deleteAthlete(athlete.profileImg);
+                    if (error){
+                        toast("Error has occured!")
+                    } else {
+                        setData(prev => prev.filter(a => a.profileImg !== athlete.profileImg));
+                        toast("Athlete has been deleted!")
+                    }
+                }}>
+                    Delete Athlete
+                </Button>
         </Card>
         ))}
     </div>

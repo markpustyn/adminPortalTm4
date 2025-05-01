@@ -63,3 +63,12 @@ export async function fetchData() {
   
     return { data, error };
   }
+export async function deleteAthlete(profileImg: string) {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('athlete')
+      .delete()
+      .eq('profileImg', {profileImg})
+  
+    return { data, error };
+  }
