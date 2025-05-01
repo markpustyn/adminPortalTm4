@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form"
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Athletes from "./athletes";
 
 type AthleteData = {
   name?: string;
@@ -81,7 +82,7 @@ export default function Home() {
           >
             <div>
               <Label htmlFor="name">Name</Label>
-              <Input {...register('name')} type="text" placeholder="Name" />
+              <Input {...register('name')} type="text" placeholder="Name" required/>
             </div>
             <div>
               <Label htmlFor="school">School</Label>
@@ -97,7 +98,7 @@ export default function Home() {
             </div>
             <div>
               <Label htmlFor="height">Height</Label>
-              <Input {...register('height')} type="text" placeholder="Height" />
+              <Input {...register('height')} type="text" placeholder={`5' 12"`} required/>
             </div>
             <div>
               <Label htmlFor="interests">Interests</Label>
@@ -105,7 +106,7 @@ export default function Home() {
             </div>
             <div>
               <Label htmlFor="sport">Sport</Label>
-              <Input {...register('sport')} type="text" placeholder="Sport" />
+              <Input {...register('sport')} type="text" placeholder="Football" required/>
             </div>
             <div>
               <Label htmlFor="social">Social Media</Label>
@@ -164,7 +165,7 @@ export default function Home() {
         </div>
         <Button type="submit">Submit</Button>
       </form>
-
+      <Athletes/>
         </div>
     </main>
   );

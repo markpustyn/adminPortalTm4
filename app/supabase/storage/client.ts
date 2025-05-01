@@ -55,13 +55,11 @@ export async function uploadImage({file, bucket, folder, info}: UploadProps & {i
       
     return {imgUrl, uploadError, data, error}
 }
-// export async function uploadData(info: AthleteData, imgUrl: any) {
-//     const supabase = createClient();
-//     info['profileImg'] = imgUrl
-//     const { data, error } = await supabase
-//       .from('athlete')
-//       .insert(info)
-//       .select()
+export async function fetchData() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('athlete')
+      .select("*")
   
-//     return { data, error };
-//   }
+    return { data, error };
+  }
