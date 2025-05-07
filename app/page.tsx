@@ -122,7 +122,8 @@ export default function Home() {
             </div>
             <div className="space-y-4">
           <div className="flex flex-col items-center space-y-2">
-            <Label htmlFor="picture">Select Image</Label>
+            <Label htmlFor="picture">Select Image (Compressed Images Recommended)</Label>
+            
             <Input
               id="picture"
               type="file"
