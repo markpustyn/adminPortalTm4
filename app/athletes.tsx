@@ -8,9 +8,6 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-
 
 type AthleteData = {
     name?: string;
