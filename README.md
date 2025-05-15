@@ -4,8 +4,6 @@
 
 2. Install dependencies:
    npm install
-   # or
-   yarn
 
 3. Create a Supabase project at https://app.supabase.com
 
