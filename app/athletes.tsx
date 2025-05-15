@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { deleteAthlete, fetchData } from "./supabase/storage/client";
+import { fetchData } from "./supabase/storage/client";
 import {
     Card,
     CardDescription,
@@ -58,17 +58,6 @@ export default function Athletes() {
                 height={300}
                 className="rounded"
                 />
-                <Button onClick={async () =>{
-                    const { error } = await deleteAthlete(athlete.profileImg);
-                    if (error){
-                        toast("Error has occured!")
-                    } else {
-                        setData(prev => prev.filter(a => a.profileImg !== athlete.profileImg));
-                        toast("Athlete has been deleted!")
-                    }
-                }}>
-                    Delete Athlete
-                </Button>
         </Card>
         ))}
     </div>
